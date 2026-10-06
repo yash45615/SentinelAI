@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - master
-
   pull_request:
     branches:
       - main
@@ -15,6 +14,21 @@ jobs:
   reliability:
     name: Reliability Checks
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sentinelai
+          POSTGRES_PASSWORD: sentinelai
+          POSTGRES_DB: sentinelai_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U sentinelai -d sentinelai_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -30,6 +44,51 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
+
+      - name: Create CI environment
+        shell: bash
+        run: |
+          cat > .env <<'EOF'
+          APP_ENV=development
+          DATABASE_URL=postgresql+psycopg2://sentinelai:sentinelai@localhost:5432/sentinelai_db
+          CORS_ORIGINS=http://localhost:5173
+          AI_RCA_ENABLED=false
+          AI_RCA_PROVIDER=openai
+          AI_RCA_MODEL=gpt-4.1-mini
+          AI_RCA_API_KEY=
+          AI_RCA_TIMEOUT_SECONDS=30
+          SECURITY_ENABLED=false
+          ADMIN_API_KEY=ci-test-secret
+          RATE_LIMIT_ENABLED=false
+          RATE_LIMIT_REQUESTS=120
+          RATE_LIMIT_WINDOW_SECONDS=60
+          DOCS_ENABLED=true
+          EOF
+
+      - name: Wait for PostgreSQL
+        shell: bash
+        run: |
+          python - <<'PY'
+          import socket
+          import time
+
+          host = "127.0.0.1"
+          port = 5432
+
+          for _ in range(30):
+              try:
+                  with socket.create_connection((host, port), timeout=1):
+                      print("PostgreSQL is ready.")
+                      break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise SystemExit("PostgreSQL did not become ready.")
+          PY
+
+      - name: Initialize database
+        run: |
+          python -c "from app.db.database import Base, engine; import app.db.models; Base.metadata.create_all(bind=engine); print('CI database initialized.')"
 
       - name: Validate project imports
         run: |
