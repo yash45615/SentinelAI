@@ -1,0 +1,135 @@
+# ==========================================
+# SentinelAI - Git Ignore
+# ==========================================
+
+# ------------------------------
+# Python
+# ------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# ------------------------------
+# Virtual environments
+# ------------------------------
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# ------------------------------
+# Environment / Secrets
+# ------------------------------
+.env
+.env.*
+!.env.example
+
+# ------------------------------
+# Testing
+# ------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.log
+
+# ------------------------------
+# Type checking / linting
+# ------------------------------
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# ------------------------------
+# FastAPI / application logs
+# ------------------------------
+logs/
+*.log
+
+# ------------------------------
+# Local databases
+# ------------------------------
+*.db
+*.sqlite
+*.sqlite3
+
+# ------------------------------
+# IDEs
+# ------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# ------------------------------
+# Windows
+# ------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ------------------------------
+# macOS
+# ------------------------------
+.DS_Store
+
+# ------------------------------
+# Build / packaging
+# ------------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ------------------------------
+# Temporary files
+# ------------------------------
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# ------------------------------
+# Local generated reports
+# ------------------------------
+reports/
+artifacts/
+output/
+
+# ------------------------------
+# Local load-test results
+# ------------------------------
+load_test_results/
+benchmark_results/
+
+# ------------------------------
+# Secrets / credentials
+# ------------------------------
+*.pem
+*.key
+*.crt
+credentials.json
+secrets.json
+
+# ------------------------------
+# Jupyter
+# ------------------------------
+.ipynb_checkpoints/
+
+# ------------------------------
+# Local tooling
+# ------------------------------
+.pyre/
+.pytype/
+
+# ------------------------------
+# OS / editor metadata
+# ------------------------------
+*.orig
